@@ -36,8 +36,11 @@ for category in nb_categories:
             # Checkout to an existing branch.
             current = repo.git.checkout(branch_name)
         else:
-            # Create an orphan branch.
-            current = repo.git.checkout('-b', branch_name)
+            try:
+                # Create an orphan branch.
+                current = repo.git.checkout('-b', branch_name)
+            except git.exc.GitCommandError:
+                print("Local branch already exists...")
 
         # creating file
         dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
@@ -49,6 +52,6 @@ for category in nb_categories:
         if repo.index.diff(None) or repo.untracked_files:
             repo.git.add(A=True)
             repo.git.commit(m='msg')
-            repo.git.push()
+            repo.git.push("--set-upstream", "origin", branch_name)
         else:
             print('no changes')
