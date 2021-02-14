@@ -17,7 +17,7 @@ root_path = ".." + os.sep
 # =========================================== Available Categories =====================================================
 # ======================================================================================================================
 branch_prefix = "myBinder/"
-nb_categories = ["Test6"]
+nb_categories = ["Test7"]
 
 # ======================================================================================================================
 # ====================================== Creating a Branch per Category ================================================
@@ -46,6 +46,9 @@ for category in nb_categories:
             # Create an orphan branch.
             current = repo.git.checkout('--orphan', branch_name)
             repo.git.reset("--hard")
+
+            # Migration of .gitignore file
+            repo.git.checkout("master", ".gitignore")
         except git.exc.GitCommandError:
             print("Local branch already exists...")
 
