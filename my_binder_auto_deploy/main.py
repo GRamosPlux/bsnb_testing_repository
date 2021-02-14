@@ -35,7 +35,7 @@ print('file created---------------------')
 if repo.index.diff(None) or repo.untracked_files:
     repo.git.add(A=True)
     repo.git.commit(m='msg')
-    repo.git.push('--set-upstream', 'origin', current)
+    repo.git.push('origin', current)
     print('git push')
 else:
     print('no changes')
