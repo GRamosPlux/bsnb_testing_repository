@@ -50,6 +50,7 @@ for category in nb_categories:
     if repo.index.diff(None) or repo.untracked_files:
         repo.git.add(A=True)
         repo.git.commit(m='msg')
-        repo.git.push("--set-upstream", "origin", branch_name)
+        repo.git.push()
+        #repo.git.push("--set-upstream", "origin", branch_name)
     else:
         print('no changes')
