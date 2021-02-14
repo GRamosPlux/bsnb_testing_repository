@@ -39,19 +39,20 @@ if repo.index.diff(None) or repo.untracked_files:
 else:
     print('No changes in this branch')
 
+# Get list of updated Notebooks.
+# >>> Read JSON file containing the list of updated Notebooks.
+with open(src_folder + 'last_updated_nbs.json') as f:
+    data = json.load(f)
+# >>> Convert JSON data into a dictionary.
+json_dict = json.loads(data)
+# >>> Store the list of updated Notebooks.
+upt_notebooks = json_dict["updated_notebooks"]
+
 # >>> Creating/Checkout the new branch reference.
 for category in nb_categories:
-    # Check if the current category branch should be updated.
-    # >>> Read JSON file containing the list of updated Notebooks.
-    with open(src_folder + 'last_updated_nbs.json') as f:
-        data = json.load(f)
-    # >>> Convert JSON data into a dictionary.
-    json_dict = json.loads(data)
-    # >>> Store the list of updated Notebooks.
-    upt_notebooks = json_dict["updated_notebooks"]
-
+    # >>> Check if the current category branch should be updated.
     # Get list of Notebooks in the current category folder.
-    list_files = os.listdir()
+    list_files = os.listdir(src_folder + "categories" + os.sep + category)
     print(list_files)
 
     branch_name = branch_prefix + category.lower()
