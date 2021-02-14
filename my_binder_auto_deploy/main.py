@@ -43,6 +43,7 @@ else:
 # >>> Read JSON file containing the list of updated Notebooks.
 with open(curr_dir + os.sep + src_folder + 'last_updated_nbs.json', 'r') as f:
     data = json.load(f)
+print(data)
 # >>> Convert JSON data into a dictionary.
 json_dict = json.loads(data)
 # >>> Store the list of updated Notebooks.
