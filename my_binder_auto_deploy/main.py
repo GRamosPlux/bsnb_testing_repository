@@ -42,7 +42,7 @@ for category in nb_categories:
     if branch_name in repo.references:
         # Checkout to an existing branch.
         current = repo.git.checkout(branch_name)
-        print(">>> Branch already exists...")
+        print(">>> Branch [" + branch_name + "] already exists...")
     else:
         try:
             # Create an orphan branch.
@@ -53,7 +53,7 @@ for category in nb_categories:
             repo.git.checkout("master", ".gitignore")
         except git.exc.GitCommandError:
             print("Local branch already exists...")
-        print(">>> Trying to create a new branch...")
+        print(">>> Trying to create a new branch [" + branch_name + "]...")
 
     # creating file
     dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
