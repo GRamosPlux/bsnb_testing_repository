@@ -50,7 +50,7 @@ upt_notebooks = json_dict["updated_notebooks"]
 for category in nb_categories:
     # >>> Check if the current category branch should be updated.
     # Get list of Notebooks in the current category folder.
-    list_files = os.listdir(src_folder + "categories" + os.sep + category)
+    list_files = os.listdir(curr_dir + os.sep + src_folder + "categories" + os.sep + category)
     print(list_files)
 
     branch_name = branch_prefix + category.lower()
