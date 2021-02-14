@@ -41,7 +41,7 @@ else:
 
 # Get list of updated Notebooks.
 # >>> Read JSON file containing the list of updated Notebooks.
-with open(src_folder + 'last_updated_nbs.json') as f:
+with open(src_folder + 'last_updated_nbs.json', 'r') as f:
     data = json.load(f)
 # >>> Convert JSON data into a dictionary.
 json_dict = json.loads(data)
@@ -76,7 +76,7 @@ for category in nb_categories:
     try:
         # Creating log file.
         dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
-        with open(curr_dir + os.sep + 'log' + '.txt', 'w') as f:
+        with open(curr_dir + os.sep + 'log.txt', 'w') as f:
             f.write(str(dtime))
 
         # Retrieve files from master.
