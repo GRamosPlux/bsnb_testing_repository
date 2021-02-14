@@ -17,8 +17,7 @@ root_path = ".." + os.sep
 # =========================================== Available Categories =====================================================
 # ======================================================================================================================
 branch_prefix = "myBinder/"
-nb_categories = ["Connect", "Detect", "Evaluate", "Extract", "Install", "Load", "MainFiles", "Other", "Pre-Process",
-                 "Record", "Train_And_Classify", "Understand", "Visualise"]
+nb_categories = ["Test1"]
 
 # ======================================================================================================================
 # ====================================== Creating a Branch per Category ================================================
@@ -37,7 +36,7 @@ for category in nb_categories:
     else:
         try:
             # Create an orphan branch.
-            current = repo.git.checkout('-b', branch_name)
+            current = repo.git.checkout('-orphan', branch_name)
         except git.exc.GitCommandError:
             print("Local branch already exists...")
 
