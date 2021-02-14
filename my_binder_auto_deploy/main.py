@@ -21,12 +21,9 @@ root_path = ".." + os.sep
 curr_dir = os.path.dirname(os.path.realpath(""))
 repo = git.Repo(curr_dir)
 
-# >>> Creating the new branch reference.
+# >>> Creating/Checkout the new branch reference.
 new_branch = 'test_branch'
-current = repo.create_head(new_branch)
-
-# >>> Checkout to the new branch.
-current.checkout()
+current = repo.git.checkout(new_branch)
 
 #creating file
 dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
