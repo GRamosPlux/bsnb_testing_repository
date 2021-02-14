@@ -3,6 +3,7 @@
 # ======================================================================================================================
 import os
 import git
+import json
 from time import *
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< REQUIREMENTS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -40,6 +41,19 @@ else:
 
 # >>> Creating/Checkout the new branch reference.
 for category in nb_categories:
+    # Check if the current category branch should be updated.
+    # >>> Read JSON file containing the list of updated Notebooks.
+    with open(src_folder + 'last_updated_nbs.json') as f:
+        data = json.load(f)
+    # >>> Convert JSON data into a dictionary.
+    json_dict = json.loads(data)
+    # >>> Store the list of updated Notebooks.
+    upt_notebooks = json_dict["updated_notebooks"]
+
+    # Get list of Notebooks in the current category folder.
+    list_files = os.listdir()
+    print(list_files)
+
     branch_name = branch_prefix + category.lower()
     if branch_name in repo.references:
         # Checkout to an existing branch.
@@ -58,16 +72,20 @@ for category in nb_categories:
         print(">>> Trying to create a new branch [" + branch_name + "]...")
 
     # Get files from master belonging to the category under analysis.
-    repo.git.checkout("master", src_folder + "categories" + os.sep + category)  # Notebooks belonging to this category.
-    # >>> Resources folders.
-    repo.git.checkout("master", src_folder + "images")  # Images.
-    repo.git.checkout("master", src_folder + "signal_samples")  # Signal Samples.
-    repo.git.checkout("master", src_folder + "styles")  # CSS Styles.
+    try:
+        # Creating log file.
+        dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
+        with open(curr_dir + os.sep + 'log' + '.txt', 'w') as f:
+            f.write(str(dtime))
 
-    # Creating log file
-    dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
-    with open(curr_dir + os.sep + 'log' + '.txt', 'w') as f:
-        f.write(str(dtime))
+        # Retrieve files from master.
+        repo.git.checkout("master", src_folder + "categories" + os.sep + category)  # Notebooks belonging to this category.
+        # >>> Resources folders.
+        repo.git.checkout("master", src_folder + "images")  # Images.
+        repo.git.checkout("master", src_folder + "signal_samples")  # Signal Samples.
+        repo.git.checkout("master", src_folder + "styles")  # CSS Styles.
+    except git.exc.GitCommandError:
+        print("No files to be imported from master")
 
     # >>> Push data to the remote version of the repository.
     if repo.index.diff(None) or repo.untracked_files:
