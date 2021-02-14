@@ -14,6 +14,12 @@ from time import *
 root_path = ".." + os.sep
 
 # ======================================================================================================================
+# =========================================== Available Categories =====================================================
+# ======================================================================================================================
+branch_prefix = "myBinder/"
+nb_categories = ["Test6"]
+
+# ======================================================================================================================
 # ====================================== Creating a Branch per Category ================================================
 # ======================================================================================================================
 # >>> Identification of the path for the local version of the repository
@@ -21,24 +27,41 @@ root_path = ".." + os.sep
 curr_dir = os.path.dirname(os.path.realpath(""))
 repo = git.Repo(curr_dir)
 
-# >>> Creating the new branch reference.
-new_branch = 'test_branch'
-current = repo.create_head(new_branch)
-
-# >>> Checkout to the new branch.
-current.checkout()
-
-#creating file
-dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
-with open(curr_dir + os.sep + 'lastCommit' + '.txt', 'w') as f:
-    f.write(str(dtime))
-print('file created---------------------')
-
-# >>> Push data to the remote version of the repository.
+# >>> Push pending changes into master branch.
 if repo.index.diff(None) or repo.untracked_files:
     repo.git.add(A=True)
-    repo.git.commit(m='msg')
-    repo.git.push('--set-upstream', 'origin', current)
-    print('git push')
+    repo.git.commit(m='Preparation for myBinder release')
+    repo.git.push()
 else:
     print('no changes')
+
+# >>> Creating/Checkout the new branch reference.
+for category in nb_categories:
+    branch_name = branch_prefix + category.lower()
+    if branch_name in repo.references:
+        # Checkout to an existing branch.
+        current = repo.git.checkout(branch_name)
+    else:
+        try:
+            # Create an orphan branch.
+            current = repo.git.checkout('--orphan', branch_name)
+            repo.git.reset("--hard")
+        except git.exc.GitCommandError:
+            print("Local branch already exists...")
+
+    # creating file
+    dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
+    with open(curr_dir + os.sep + 'lastCommit' + '.txt', 'w') as f:
+        f.write(str(dtime))
+    print('file created---------------------')
+
+    # >>> Push data to the remote version of the repository.
+    if repo.index.diff(None) or repo.untracked_files:
+        repo.git.add(A=True)
+        repo.git.commit(m='msg')
+        repo.git.push("--set-upstream", "origin", branch_name)
+    else:
+        print('no changes')
+
+# Return to master branch.
+current = repo.git.checkout("master")
