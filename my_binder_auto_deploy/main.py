@@ -30,28 +30,27 @@ repo = git.Repo(curr_dir)
 
 # >>> Creating/Checkout the new branch reference.
 for category in nb_categories:
-    for ref in repo.references:
-        branch_name = branch_prefix + category.lower()
-        if branch_name == ref.name:
-            # Checkout to an existing branch.
-            current = repo.git.checkout(branch_name)
-        else:
-            try:
-                # Create an orphan branch.
-                current = repo.git.checkout('-b', branch_name)
-            except git.exc.GitCommandError:
-                print("Local branch already exists...")
+    branch_name = branch_prefix + category.lower()
+    if branch_name in repo.references:
+        # Checkout to an existing branch.
+        current = repo.git.checkout(branch_name)
+    else:
+        try:
+            # Create an orphan branch.
+            current = repo.git.checkout('-b', branch_name)
+        except git.exc.GitCommandError:
+            print("Local branch already exists...")
 
-        # creating file
-        dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
-        with open(curr_dir + os.sep + 'lastCommit' + '.txt', 'w') as f:
-            f.write(str(dtime))
-        print('file created---------------------')
+    # creating file
+    dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
+    with open(curr_dir + os.sep + 'lastCommit' + '.txt', 'w') as f:
+        f.write(str(dtime))
+    print('file created---------------------')
 
-        # >>> Push data to the remote version of the repository.
-        if repo.index.diff(None) or repo.untracked_files:
-            repo.git.add(A=True)
-            repo.git.commit(m='msg')
-            repo.git.push("--set-upstream", "origin", branch_name)
-        else:
-            print('no changes')
+    # >>> Push data to the remote version of the repository.
+    if repo.index.diff(None) or repo.untracked_files:
+        repo.git.add(A=True)
+        repo.git.commit(m='msg')
+        repo.git.push("--set-upstream", "origin", branch_name)
+    else:
+        print('no changes')
