@@ -12,6 +12,7 @@ from time import *
 # ============================================= Repository Info ========================================================
 # ======================================================================================================================
 root_path = ".." + os.sep
+src_folder = "header_footer" + os.sep + "biosignalsnotebooks_environment" + os.sep
 
 # ======================================================================================================================
 # =========================================== Available Categories =====================================================
@@ -30,11 +31,12 @@ repo = git.Repo(curr_dir)
 
 # >>> Push pending changes into master branch.
 if repo.index.diff(None) or repo.untracked_files:
+    print("Pushing master changes to remote repository...")
     repo.git.add(A=True)
     repo.git.commit(m='Preparation for myBinder release')
     repo.git.push()
 else:
-    print('no changes')
+    print('No changes in this branch')
 
 # >>> Creating/Checkout the new branch reference.
 for category in nb_categories:
@@ -55,19 +57,26 @@ for category in nb_categories:
             print("Local branch already exists...")
         print(">>> Trying to create a new branch [" + branch_name + "]...")
 
-    # creating file
+    # Get files from master belonging to the category under analysis.
+    repo.git.checkout("master", src_folder + "categories" + os.sep + category)  # Notebooks belonging to this category.
+    # >>> Resources folders.
+    repo.git.checkout("master", src_folder + "images")  # Images.
+    repo.git.checkout("master", src_folder + "signal_samples")  # Signal Samples.
+    repo.git.checkout("master", src_folder + "styles")  # CSS Styles.
+
+    # Creating log file
     dtime = strftime('%d-%m-%Y %H:%M:%S', localtime())
-    with open(curr_dir + os.sep + 'lastCommit' + '.txt', 'w') as f:
+    with open(curr_dir + os.sep + 'log' + '.txt', 'w') as f:
         f.write(str(dtime))
-    print('file created---------------------')
 
     # >>> Push data to the remote version of the repository.
     if repo.index.diff(None) or repo.untracked_files:
+        print("Pushing [" + branch_name + "] changes to remote repository...")
         repo.git.add(A=True)
         repo.git.commit(m='msg')
         repo.git.push("--set-upstream", "origin", branch_name)
     else:
-        print('no changes')
+        print('No changes in this branch')
 
 # Return to master branch.
 current = repo.git.checkout("master")
